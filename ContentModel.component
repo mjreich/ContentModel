@@ -1,0 +1,59 @@
+<?php
+namespace ContentModel;
+/**
+ * ContentModel
+ *
+ * ContentModel — Creates a simple ORM style model on top of the types defined by the ContentManagerExtender.
+ *
+ * @package    ContentModel
+ * @version    0.1.0
+ * @author     Seabourne Consulting
+ * @license    MIT License
+ * @copyright  2012 Seabourne Consulting
+ * @link       https://mjreich@github.com/mjreich/ContentModel.git
+ */
+
+
+use \Cumula\BaseComponent as BaseComponent;
+
+include_once(__DIR__.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'GenericContentModel.class.php');
+
+/**
+ * ContentModel Class
+ *
+ * The ContentModel class dynamically creates ORM style model classes for the types defined by the ContentManagerExtender.
+ * For example, if I create a 'Page' type, a new Page class in the global namespace will be available.  These are extensions of the
+ * GenericContentModel class in this package.
+ *
+ * @package		ContentModel
+ * @author     Seabourne Consulting
+ */
+class ContentModel extends BaseComponent {
+	
+	/**
+	 * The standard startup method.  Adds an event listener to fire after the GatherContentExtensions event.
+	 *
+	 * @return void
+	 * @author Mike Reich
+	 */
+	public function startup() {
+		$this->addEventListenerTo('ContentManagerExtender', 'after_GatherContentExtensions', 'setupModels');
+	}
+	
+	/**
+	 * Handler to set up the content models.  Fires after the GatherContentExtensions event.  Loops through the defined types
+	 * and evals a new class definition based on the type names.
+	 *
+	 * @return void
+	 * @author Mike Reich
+	 */
+	public function setupModels() {
+		$types = \I('ContentManagerExtender')->getTypes();
+		//TODO: Need to sanitize the incomming type defs to remove any malicious code.  Damn you bobby tables.
+		foreach($types as $type) {
+			$newClass = "use \ContentModel\GenericContentModel; class $type extends GenericContentModel { }";
+			eval($newClass);
+		}
+	}
+
+}
