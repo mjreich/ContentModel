@@ -37,7 +37,7 @@ class ContentModel extends BaseComponent {
 	 * @author Mike Reich
 	 */
 	public function startup() {
-		$this->addEventListenerTo('ContentManagerExtender', 'after_GatherContentExtensions', 'setupModels');
+		$this->addEventListenerTo('ContentManagerExtender', 'AfterGatherContentExtensions', 'setupModels');
 	}
 	
 	/**
@@ -55,5 +55,4 @@ class ContentModel extends BaseComponent {
 			eval($newClass);
 		}
 	}
-
 }

@@ -175,7 +175,7 @@ class GenericContentModel extends EventDispatcher {
 					$args[lcfirst($parts[1])] = $vars[0];
 				}
 				$ret = static::find($args, $qtype);
-				if(strstr($function, 'First'))
+				if(strstr($function, 'First')) 
 					return empty($ret) ? false : $ret[0];
 				else if(strstr($function, 'All'))
 					return $ret;
@@ -196,7 +196,11 @@ class GenericContentModel extends EventDispatcher {
 	 * @author Mike Reich
 	 */
 	public function __toString() {
-		return json_encode($this->_fields);
+		return json_encode($this->_values);
+	}
+	
+	public function getValues() {
+		return $this->_values;
 	}
 	
 	/**
